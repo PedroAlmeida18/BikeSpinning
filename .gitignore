@@ -28,6 +28,7 @@
 # Visual Studio cache directory
 .vs/
 
+
 # Gradle cache directory
 .gradle/
 
@@ -73,3 +74,8 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Firebase plugin binaries (evita exceder o limite de 100 MB do GitHub)
+Assets/Firebase/Plugins/x86_64/*.so
+Assets/Firebase/Plugins/x86_64/*.bundle
+
