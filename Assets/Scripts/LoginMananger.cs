@@ -23,7 +23,15 @@ public class LoginMananger : MonoBehaviour
     public Button CriarContaSave;
 
     public GameObject painelCadastro;
+    public GameObject painelRecuperarSenha;
 
+    public Button ButtonRecuperarSenhaSave;
+    public Button RecuperarSenhaButton;
+    public TMP_InputField recuperaUser;
+    public TMP_InputField confirmaUser;
+    public TextMeshProUGUI mensagemPainelSenha;
+    public Button ButtonVoltarSenha;
+    public Button buttonVoltarConta;
 
     void Awake()
     {
@@ -38,6 +46,11 @@ public class LoginMananger : MonoBehaviour
         SalvarConta.onClick.AddListener(CriarContaFirebase);
         CriarContaSave.onClick.AddListener(DesligarPainelCadastro);
         loginButton.onClick.AddListener(LoginComFirebase);
+        RecuperarSenhaButton.onClick.AddListener(AbrirPainelRecuperarSenha);
+        ButtonRecuperarSenhaSave.onClick.AddListener(RecuperarSenhaFirebase);
+        ButtonVoltarSenha.onClick.AddListener(FecharPainel);
+        buttonVoltarConta.onClick.AddListener(FecharPainel);
+
     }
 
     void Update()
@@ -80,7 +93,7 @@ public class LoginMananger : MonoBehaviour
         }
 
         if(senha == confirmaSenha ){
-            AuthResult authResult = task.Result;
+        AuthResult authResult = task.Result;
         FirebaseUser user = authResult.User;
         FirebaseManager.user = user;
 
@@ -93,6 +106,30 @@ public class LoginMananger : MonoBehaviour
     });
 
     }
+    public void RecuperarSenhaFirebase(){
+        string email = recuperaUser.text;
+        string confirmaemail = confirmaUser.text;
+        try {
+            if(email==confirmaemail){
+             FirebaseManager.auth.SendPasswordResetEmailAsync(confirmaemail).ContinueWith(task => {
+                 if (task.IsCanceled || task.IsFaulted){
+               MensagemRecuperarSenha("Erro ao enviar E-mail de recuperação.", Color.red);
+                return;}
+                
+             });
+             MensagemRecuperarSenha("E-mail para recuperar senha Enviado", Color.green);
+             FecharPainel();
+        } 
+        else{
+             MensagemRecuperarSenha("Os e-mails não coincidem.", Color.red);
+        }
+        }
+        catch (Exception e){
+            MensagemRecuperarSenha("Os e-mails não coincidem.", Color.red);
+        }
+        
+       
+    }
 
     void ShowMessage(string msg, Color cor)
     {
@@ -100,7 +137,14 @@ public class LoginMananger : MonoBehaviour
         messageText.text = msg;
         messageText.color = cor;
     }
+
+    void MensagemRecuperarSenha(string mensagem,Color cor){
+        mensagemPainelSenha.gameObject.SetActive(true);
+        mensagemPainelSenha.text=mensagem;
+        mensagemPainelSenha.color=cor;
+    }
     public async void LoginComFirebase()
+
 {
     string email = userInput.text;
     string senha = senhaInput.text;
@@ -125,7 +169,6 @@ public class LoginMananger : MonoBehaviour
     }
 }
 
-
     void AbrirPainelCadastro()
     {
     painelCadastro.SetActive(true);
@@ -134,7 +177,21 @@ public class LoginMananger : MonoBehaviour
     void DesligarPainelCadastro(){
         painelCadastro.SetActive(false);
     }
-    void CarregarQuilometro(){
+  /*  void CarregarQuilometro(){
          SceneManager.LoadScene("QuilometragemScene");
+    }
+    */
+    void AbrirPainelRecuperarSenha(){
+        painelRecuperarSenha.SetActive(true);
+    }
+    void FecharPainel(){
+        if(painelCadastro.activeSelf){
+            painelCadastro.SetActive(false);
+
+        }
+        if(painelRecuperarSenha.activeSelf){
+            painelRecuperarSenha.SetActive(false);
+        }
+      
     }
 }
